@@ -70,19 +70,17 @@ bool TraceFlagList::Set(const char* name, bool enabled) {
 }
 
 void TraceFlagList::Add(TraceFlag* flag) {
+  TraceFlag* t;
   bool found = false;
   // prevent cycles at 'Add' flag to 'root_tracer_'
   for (t = root_tracer_; t != nullptr; t = t->next_tracer_) {
     // check if flag is already part of 'root_tracer_'
     if (t == flag) {
-      found = true;
+      return;
     }
   }
-  // append ot 'root_tracer_' only if not found
-  if (! found) {
-    flag->next_tracer_ = root_tracer_;
-    root_tracer_ = flag;
-  }
+  flag->next_tracer_ = root_tracer_;
+  root_tracer_ = flag;
 }
 
 void TraceFlagList::LogAllTracers() {
